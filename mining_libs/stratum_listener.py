@@ -152,6 +152,8 @@ class StratumProxyService(GenericService):
         session = self.connection_ref().get_session()
         session['tail'] = tail
 
+        workerid = 0
+
         custom_user = self.custom_user
         if self.enable_worker_id and params.has_key("login"):
             if self.worker_id_from_ip:
@@ -163,8 +165,12 @@ class StratumProxyService(GenericService):
                 params_login = re.sub(r'[^\d]', '', params["login"])
                 if params_login and int(params_login)>0:
                     custom_user = "%s.%s" % (custom_user, params_login)
+                    workerid = params_login
 
         first_job = (yield self._f.rpc('login', {"login":custom_user, "pass":self.custom_password}))
+
+        ip = self.connection_ref()._get_ip()
+        log.info("LOGIN %s|%i" % (ip, workerid))
 
         try:
             self.connection_ref().on_disconnect.addCallback(self._drop_tail, tail)
