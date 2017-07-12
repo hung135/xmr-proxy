@@ -89,7 +89,6 @@ class StratumProxyService(GenericService):
     custom_password = None
     enable_worker_id = False
     worker_id_from_ip = False
-    custom_worker_id = 0
     tail_iterator = 0
     registered_tails = []
     
@@ -164,7 +163,6 @@ class StratumProxyService(GenericService):
                 params_login = re.sub(r'[^\d]', '', params["login"])
                 if params_login and int(params_login)>0:
                     custom_user = "%s.%s" % (custom_user, params_login)
-                    self.custom_worker_id = params_login
 
         first_job = (yield self._f.rpc('login', {"login":custom_user, "pass":self.custom_password}))
 
@@ -190,14 +188,14 @@ class StratumProxyService(GenericService):
             raise SubmitException("Connection is not subscribed")
 
         ip = self.connection_ref()._get_ip()
-        wname = self.custom_worker_id
+        wname = re.sub(r'[^\d]', '', params["login"])
         start = time.time()
         
         try:
             result = (yield self._f.rpc('submit', params))
         except RemoteServiceException as exc:
             response_time = (time.time() - start) * 1000
-            log.info("[%dms] Share from '%s' REJECTED: %s" % (response_time, wmname, str(exc)))
+            log.info("[%dms] Share from '%s' REJECTED: %s" % (response_time, wname, str(exc)))
             raise SubmitException(*exc.args)
 
         response_time = (time.time() - start) * 1000
