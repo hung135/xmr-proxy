@@ -49,7 +49,7 @@ class ClientMiningService(GenericEventHandler):
             
             # Broadcast to getwork clients
             job = Job.build_from_pool(job_id, blob, target)
-            log.info("New job %s for %s" % (job_id, user_id))
+            #log.info("New job %s for %s" % (job_id, user_id))
 
             self.job_registry.add_job(job, True)
             

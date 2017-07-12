@@ -24,7 +24,7 @@ class MulticastResponder(DatagramProtocol):
         self.transport.write(json.dumps({"id": msg_id, "result": result, "error": error}), address)
         
     def datagramReceived(self, datagram, address):
-        log.info("Received local discovery request from %s:%d" % address)
+        #log.info("Received local discovery request from %s:%d" % address)
         
         try:
             data = json.loads(datagram)
