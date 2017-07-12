@@ -170,7 +170,7 @@ class StratumProxyService(GenericService):
         first_job = (yield self._f.rpc('login', {"login":custom_user, "pass":self.custom_password}))
 
         ip = self.connection_ref()._get_ip()
-        log.info("LOGIN %s | %s" % (ip, workerid))
+        log.info("%s | %s LOGIN" % (ip, workerid))
 
         try:
             self.connection_ref().on_disconnect.addCallback(self._drop_tail, tail)
@@ -204,7 +204,7 @@ class StratumProxyService(GenericService):
             raise SubmitException(*exc.args)
 
         response_time = (time.time() - start) * 1000
-        log.info("SUBMIT %s" % (ip))
+        log.info("%s SUBMIT" % (ip))
         defer.returnValue(result)
 
     @defer.inlineCallbacks
