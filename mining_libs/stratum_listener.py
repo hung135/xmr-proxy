@@ -188,18 +188,17 @@ class StratumProxyService(GenericService):
             raise SubmitException("Connection is not subscribed")
 
         ip = self.connection_ref()._get_ip()
-        wname = re.sub(r'[^\d]', '', params["login"])
         start = time.time()
         
         try:
             result = (yield self._f.rpc('submit', params))
         except RemoteServiceException as exc:
             response_time = (time.time() - start) * 1000
-            log.info("[%dms] Share from '%s' REJECTED: %s" % (response_time, wname, str(exc)))
+            log.info("[%dms] Share from '%s' REJECTED: %s" % (response_time, ip, str(exc)))
             raise SubmitException(*exc.args)
 
         response_time = (time.time() - start) * 1000
-        log.info("[%dms] Share from '%s' accepted" % (response_time, wname))
+        log.info("[%dms] Share from '%s' accepted" % (response_time, ip))
         defer.returnValue(result)
 
     @defer.inlineCallbacks
