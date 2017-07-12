@@ -204,7 +204,7 @@ class StratumProxyService(GenericService):
             raise SubmitException(*exc.args)
 
         response_time = (time.time() - start) * 1000
-        log.info("[%dms] Share from '%s' accepted" % (response_time, ip))
+        log.info("SUBMIT %s" % (ip))
         defer.returnValue(result)
 
     @defer.inlineCallbacks
